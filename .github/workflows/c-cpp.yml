@@ -30,14 +30,25 @@ jobs:
 
   # 2. Linux Build (Ubuntu)
   build-linux:
-    runs-on: ubuntu-latest
-    steps:
+   runs-on: ubuntu-latest
+   steps:
     - uses: actions/checkout@v4
     
     - name: Install Dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y libraylib-dev libx11-dev libxrandr-dev libxi-dev libgl1-mesa-dev libxcursor-dev libxinerama-dev
+        sudo apt-get install -y build-essential git cmake libasound2-dev mesa-common-dev libx11-dev libxrandr-dev libxi-dev xorg-dev libgl1-mesa-dev libglu1-mesa-dev
+        
+    - name: Build Raylib 5.0 Source
+      run: |
+        wget https://github.com/raysan5/raylib/archive/refs/tags/5.0.tar.gz
+        tar -xvf 5.0.tar.gz
+        cd raylib-5.0
+        mkdir build && cd build
+        cmake -DBUILD_SHARED_LIBS=OFF -DBUILD_EXAMPLES=OFF -DBUILD_GAMES=OFF ..
+        make -j4
+        sudo make install
+        sudo ldconfig
         
     - name: Configure CMake
       run: cmake -S . -B build
@@ -50,7 +61,6 @@ jobs:
       with:
         name: SnakeGame-Linux
         path: build/SnakeGame
-
   # 3. macOS Build
   build-mac:
     runs-on: macos-latest
