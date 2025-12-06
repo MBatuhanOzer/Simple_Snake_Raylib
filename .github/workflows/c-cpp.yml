@@ -1,0 +1,73 @@
+name: Build Game Multi-Platform
+
+on: [push, pull_request]
+
+jobs:
+  # 1. Windows Build (MSVC)
+  build-windows-msvc:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    # We must replicate your local setup on the Cloud
+    - name: Download Raylib MSVC
+      run: |
+        Invoke-WebRequest -Uri "https://github.com/raysan5/raylib/releases/download/5.0/raylib-5.0_win64_msvc16.zip" -OutFile "raylib.zip"
+        Expand-Archive -Path "raylib.zip" -DestinationPath "C:\"
+        Rename-Item -Path "C:\raylib-5.0_win64_msvc16" -NewName "raylib_vs"
+        
+    - name: Configure CMake
+      run: cmake -S . -B build
+      
+    - name: Build
+      run: cmake --build build --config Release
+      
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: SnakeGame-Windows-MSVC
+        path: build/Release/SnakeGame.exe
+
+  # 2. Linux Build (Ubuntu)
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libraylib-dev libx11-dev libxrandr-dev libxi-dev libgl1-mesa-dev libxcursor-dev libxinerama-dev
+        
+    - name: Configure CMake
+      run: cmake -S . -B build
+      
+    - name: Build
+      run: cmake --build build --config Release
+      
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: SnakeGame-Linux
+        path: build/SnakeGame
+
+  # 3. macOS Build
+  build-mac:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Raylib
+      run: brew install raylib
+      
+    - name: Configure CMake
+      run: cmake -S . -B build
+      
+    - name: Build
+      run: cmake --build build --config Release
+      
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: SnakeGame-Mac
+        path: build/SnakeGame
