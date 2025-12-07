@@ -1,7 +1,8 @@
 class Snake {
 public:
     std::deque<Vector2> body = { Vector2{6, 9}, Vector2{5, 9}, Vector2{4, 9} };
-    Vector2 direction = { 1, 0 };
+	Vector2 direction = { 1, 0 };   
+    std::deque<Vector2> inputs;
     bool addSegment = false;
 
     void Draw() {
@@ -16,17 +17,22 @@ public:
     }
 
     void Update() {
+        if (!inputs.empty()) {
+            direction = inputs.front();
+            inputs.pop_front();
+        }
         body.push_front(Vector2Add(body[0], direction));
         if (addSegment) {
-            addSegment = false;
+			addSegment = false;
         }
         else {
             body.pop_back();
-        }
+		}
     }
 
     void Reset() {
         body = { Vector2{6, 9}, Vector2{5, 9}, Vector2{4, 9} };
-        direction = { 1, 0 };
+		inputs.clear();
+        direction = {1, 0};
     }
 };

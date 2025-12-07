@@ -158,17 +158,24 @@ void game_loop(Game game) {
     }
     double lastUpdateTime = 0;
     while (!WindowShouldClose()) {
-        if (IsKeyPressed(KEY_UP) && game.snake.direction.y != 1) {
-            game.snake.direction = { 0, -1 };
+        Vector2 lastDirection;
+        if (game.snake.inputs.empty()) {
+            lastDirection = game.snake.direction;
         }
-        if (IsKeyPressed(KEY_DOWN) && game.snake.direction.y != -1) {
-            game.snake.direction = { 0, 1 };
+        else {
+            lastDirection = game.snake.inputs.back();
+		}
+        if (IsKeyPressed(KEY_UP) && lastDirection.y != 1) {
+			game.snake.inputs.push_back({ 0, -1 });
         }
-        if (IsKeyPressed(KEY_LEFT) && game.snake.direction.x != 1) {
-            game.snake.direction = { -1, 0 };
+        if (IsKeyPressed(KEY_DOWN) && lastDirection.y != -1) {
+            game.snake.inputs.push_back({ 0, 1 });
         }
-        if (IsKeyPressed(KEY_RIGHT) && game.snake.direction.x != -1) {
-            game.snake.direction = { 1, 0 };
+        if (IsKeyPressed(KEY_LEFT) && lastDirection.x != 1) {
+            game.snake.inputs.push_back({ -1, 0 });
+        }
+        if (IsKeyPressed(KEY_RIGHT) && lastDirection.x != -1) {
+            game.snake.inputs.push_back({ 1, 0 });
         }
 		// Update game state at fixed intervals
         if (GetTime() - lastUpdateTime > 0.10) {
