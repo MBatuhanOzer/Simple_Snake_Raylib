@@ -1,6 +1,7 @@
 ﻿#include "raylib.h"
 #include <raymath.h>
 #include <deque> // To use for snake body segments
+#include <cstdio> // For linux build
 
 #include "Game.hpp"
 
@@ -10,4 +11,5 @@ int main(int argc, char**argv) {
 
     CloseWindow();
     return 0;
+
 }
