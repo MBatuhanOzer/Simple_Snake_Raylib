@@ -8,8 +8,6 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
-    
-    # We must replicate your local setup on the Cloud
     - name: Download Raylib MSVC
       run: |
         Invoke-WebRequest -Uri "https://github.com/raysan5/raylib/releases/download/5.0/raylib-5.0_win64_msvc16.zip" -OutFile "raylib.zip"
